@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --bg: #f7f8fc;
+  --surface: #ffffff;
+  --surface-2: #f3f4fa;
+  --border: #e7e8f0;
+  --text: #202333;
+  --text-2: #687083;
+  --primary: #5146e5;
+  --primary-hover: #4338ca;
+  --primary-fg: #ffffff;
+  --violet: #7044d8;
+  --lavender: #b8b5ff;
+  --lilac: #f1f0ff;
+  --highlight: #f5c66a;
+  --highlight-soft: #fdf3dc;
+  --success: #12805c;
+  --success-soft: #e3f6ee;
+  --warning: #9a5b00;
+  --warning-soft: #fff1d6;
+  --danger: #c0262d;
+  --danger-soft: #fde8e9;
+  --info: #1d6fb8;
+  --info-soft: #e4f1fb;
+  --ring: #5146e5;
+  --shadow-sm: 0 1px 2px rgb(32 35 51 / 0.05), 0 1px 3px rgb(32 35 51 / 0.04);
+  --shadow-md: 0 6px 20px -6px rgb(32 35 51 / 0.12), 0 2px 6px rgb(32 35 51 / 0.04);
+  --shadow-lg: 0 24px 48px -16px rgb(81 70 229 / 0.28);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0f1020;
+  --surface: #181a2e;
+  --surface-2: #20233b;
+  --border: #2b2e4a;
+  --text: #eef0fb;
+  --text-2: #a4a9c4;
+  --primary: #8b84ff;
+  --primary-hover: #a19bff;
+  --primary-fg: #12132a;
+  --violet: #a07cf0;
+  --lavender: #6a63d8;
+  --lilac: #25264a;
+  --highlight: #f5c66a;
+  --highlight-soft: #3a3020;
+  --success: #4fd1a1;
+  --success-soft: #153a30;
+  --warning: #f2b64d;
+  --warning-soft: #3b2e14;
+  --danger: #ff8a90;
+  --danger-soft: #401c21;
+  --info: #6cb6f2;
+  --info-soft: #14293d;
+  --ring: #8b84ff;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 24px 48px -16px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+[data-contrast="high"] {
+  --border: #5a5f7a;
+  --text-2: #3b4056;
+}
+[data-theme="dark"][data-contrast="high"] {
+  --border: #8a90b0;
+  --text-2: #d4d8ee;
+}
+[data-textsize="large"] { font-size: 18px; }
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-violet: var(--violet);
+  --color-lavender: var(--lavender);
+  --color-lilac: var(--lilac);
+  --color-highlight: var(--highlight);
+  --color-highlight-soft: var(--highlight-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --radius-card: 1.25rem;
+  --shadow-soft: var(--shadow-sm);
+  --shadow-card: var(--shadow-md);
+  --shadow-glow: var(--shadow-lg);
+}
+
+html { background: var(--bg); }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+* { border-color: var(--border); }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
+.tnum { font-variant-numeric: tabular-nums; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.snap-rail { scroll-snap-type: x mandatory; }
+.snap-rail > * { scroll-snap-align: start; }
+.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem); }
+
+.text-display { font-size: clamp(1.75rem, 4vw, 2.5rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 700; }
+.text-heading { font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.02em; font-weight: 650; }
+.text-label { font-size: 0.75rem; line-height: 1rem; letter-spacing: 0.04em; font-weight: 600; text-transform: uppercase; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.skeleton { position: relative; overflow: hidden; background: var(--surface-2); border-radius: 0.75rem; }
+.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text) 8%, transparent), transparent); animation: shimmer 1.4s infinite; }
+
+/* Prevent grid/flex children with wide content (tables, code, long words) from blowing out the page on phones. */
+main .grid > *, main .flex > * { min-width: 0; }
+main { overflow-x: clip; }
