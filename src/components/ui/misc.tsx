@@ -93,13 +93,25 @@ export function StatTile({ label, value, delta, hint, icon, tone = "surface", cl
   );
 }
 
-/** Gradient cover — always renders (no remote image dependency). */
-export function Cover({ from, to, icon, className, children, rounded = "rounded-2xl" }: { from: string; to: string; icon?: React.ReactNode; className?: string; children?: React.ReactNode; rounded?: string }) {
+/** Cover: optional photo (with graceful gradient fallback) + playful decorative shapes. The icon renders as a "sticker". */
+export function Cover({ from, to, icon, className, children, rounded = "rounded-2xl", image }: { from: string; to: string; icon?: React.ReactNode; className?: string; children?: React.ReactNode; rounded?: string; image?: string }) {
+  const [imgOk, setImgOk] = React.useState(true);
+  const showImg = !!image && imgOk;
   return (
-    <div className={cn("relative overflow-hidden", rounded, className)} style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}>
-      <div className="pointer-events-none absolute -right-6 -top-6 size-32 rounded-full bg-white/15 blur-sm" />
-      <div className="pointer-events-none absolute -bottom-10 left-6 size-28 rounded-full bg-white/10" />
-      {icon && <div className="absolute inset-0 flex items-center justify-center text-white/90">{icon}</div>}
+    <div className={cn("relative isolate overflow-hidden", rounded, className)} style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}>
+      {showImg && <img src={image} alt="" loading="lazy" onError={() => setImgOk(false)} className="absolute inset-0 -z-10 size-full object-cover" />}
+      {showImg && <div aria-hidden className="absolute inset-0 -z-10" style={{ background: `linear-gradient(160deg, color-mix(in srgb, ${from} 62%, transparent), color-mix(in srgb, ${to} 28%, transparent) 70%, rgb(0 0 0 / 0.25))` }} />}
+      {!showImg && <>
+        <div aria-hidden className="pointer-events-none absolute -right-6 -top-6 size-32 rounded-full bg-white/15" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-10 left-6 size-28 rounded-full bg-white/10" />
+        <svg aria-hidden className="pointer-events-none absolute inset-0 size-full opacity-30" preserveAspectRatio="none"><defs><pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="white" /></pattern></defs><rect width="100%" height="100%" fill="url(#dots)" /></svg>
+      </>}
+      <svg aria-hidden viewBox="0 0 120 40" className="pointer-events-none absolute bottom-2 right-3 w-16 opacity-70"><path d="M2 30c10-24 18 16 28-6s18-16 28 4 18 12 28-8 18 6 30-2" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" /></svg>
+      {icon && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className={cn("flex items-center justify-center text-white drop-shadow-lg", showImg ? "absolute bottom-2 left-2 size-10 -rotate-6 rounded-2xl bg-white/25 p-2 backdrop-blur-md [&>svg]:size-full" : "rotate-[-6deg]")}>{icon}</span>
+        </div>
+      )}
       {children}
     </div>
   );

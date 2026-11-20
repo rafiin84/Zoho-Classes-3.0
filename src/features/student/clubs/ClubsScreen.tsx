@@ -15,7 +15,7 @@ function ClubCard({ c, onLeave }: { c: Club; onLeave: (c: Club) => void }) {
   return (
     <Card className="flex h-full flex-col overflow-hidden">
       <Link href={`/student/clubs/${c.id}`} className="block" aria-label={`Open ${c.name}`}>
-        <Cover from={c.cover.from} to={c.cover.to} className="h-24" rounded="rounded-none" icon={<Icon name={c.cover.icon} size={40} weight="duotone" />} />
+        <Cover from={c.cover.from} to={c.cover.to} image={(c.cover as any).image} className="h-24" rounded="rounded-none" icon={<Icon name={c.cover.icon} size={40} weight="duotone" />} />
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex flex-wrap gap-1.5"><Badge tone="primary">{c.category}</Badge>{c.membershipPolicy === "request" && <Badge icon={<Lock size={11} />}>Request to join</Badge>}</div>
@@ -49,7 +49,7 @@ export default function ClubsScreen() {
       <PageHeader title="Clubs & communities" subtitle="Find people who like what you like. Every club has a teacher mentor, and you can leave any time." />
       {query.isSuccess && joined.length > 0 && !interest && !q && !mine && (
         <section className="mb-6"><SectionHeader title="Your clubs" /><Rail>{joined.map((c) => (
-          <Link key={c.id} href={`/student/clubs/${c.id}`} className="w-56 shrink-0"><Cover from={c.cover.from} to={c.cover.to} className="h-28 p-3" rounded="rounded-2xl" icon={<Icon name={c.cover.icon} size={36} weight="duotone" />}><span className="absolute bottom-2 left-3 text-sm font-bold text-white drop-shadow">{c.name}</span></Cover></Link>
+          <Link key={c.id} href={`/student/clubs/${c.id}`} className="w-56 shrink-0"><Cover from={c.cover.from} to={c.cover.to} image={(c.cover as any).image} className="h-28 p-3" rounded="rounded-2xl" icon={<Icon name={c.cover.icon} size={36} weight="duotone" />}><span className="absolute bottom-2 left-3 text-sm font-bold text-white drop-shadow">{c.name}</span></Cover></Link>
         ))}</Rail></section>
       )}
       <div className="mb-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar" role="group" aria-label="Interests">

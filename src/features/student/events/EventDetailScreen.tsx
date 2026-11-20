@@ -100,7 +100,7 @@ export default function EventDetailScreen({ params }: ScreenProps) {
   return (
     <div className="mx-auto max-w-4xl">
       <Link href="/student/events" className="mb-3 inline-flex items-center gap-1 text-sm font-semibold text-text-2 hover:text-text"><CaretLeft size={16} /> All events</Link>
-      <Cover from={e.cover.from} to={e.cover.to} className="mb-5 h-44 sm:h-56" rounded="rounded-[1.75rem]" icon={<Icon name={e.cover.icon} size={84} weight="duotone" />}>
+      <Cover from={e.cover.from} to={e.cover.to} image={(e.cover as any).image} className="mb-5 h-44 sm:h-56" rounded="rounded-[1.75rem]" icon={<Icon name={e.cover.icon} size={84} weight="duotone" />}>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-5 text-white">
           <div className="mb-1 flex flex-wrap gap-1.5"><Badge className="bg-white/90 text-text">{LEVEL_LABEL[e.scope]} level</Badge><Badge className="bg-white/90 text-text">{CAT_LABEL[catOf(e)]}</Badge></div>
           <h1 className="text-display">{e.title}</h1>

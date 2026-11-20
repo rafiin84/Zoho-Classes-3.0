@@ -1,9 +1,10 @@
 "use client";
+import { videoFor } from "@/lib/media";
 import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Check, Clock, Globe, Lock, PlayCircle, Robot, Star, Wheelchair, Certificate, Receipt } from "@phosphor-icons/react";
-import { AIBadge, Badge, Button, Card, CardBody, EmptyState, ErrorState, Icon, Modal, Skeleton, toast } from "@/components/ui";
+import { AIBadge, Badge, Button, Card, CardBody, Cover, EmptyState, ErrorState, Icon, Modal, Skeleton, toast } from "@/components/ui";
 import { courseService } from "@/lib/api";
 import { useActors } from "@/stores/app-store";
 import { OBJECTIVES, subjectById } from "@/lib/mock-data/core";
@@ -40,12 +41,12 @@ export default function CourseDetailScreen({ params }: ScreenProps) {
   return (
     <div className="space-y-6">
       <Link href="/student/courses" className="inline-flex items-center gap-1.5 text-sm font-semibold text-text-2 hover:text-text"><ArrowLeft size={16} />Courses</Link>
-      <div className="relative overflow-hidden rounded-[1.75rem] p-6 text-white shadow-glow sm:p-8" style={{ background: `linear-gradient(135deg, ${course.cover.from}, ${course.cover.to})` }}>
+      <Cover from={course.cover.from} to={course.cover.to} image={course.cover.image} rounded="rounded-[1.75rem]" className="p-6 text-white shadow-glow sm:p-8">
         <span aria-hidden className="absolute -right-10 -top-10 size-56 rounded-full bg-white/15" /><Icon name={course.cover.icon} size={120} weight="duotone" className="absolute -bottom-6 right-4 text-white/25" />
         <div className="relative max-w-2xl space-y-3"><div className="flex flex-wrap gap-2"><Badge className="bg-white/90 text-text">{subjectById(course.subjectId).name}</Badge><Badge className="bg-white/90 text-text">{course.kind === "marketplace" ? "Marketplace" : "From your school"}</Badge>{ai && <AIBadge label="AI Teacher" />}{course.enrolled && <Badge tone="success">Enrolled</Badge>}</div>
           <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{course.title}</h1><p className="text-white/90">{course.description}</p>
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/90"><span className="inline-flex items-center gap-1"><Star size={14} weight="fill" />{course.rating ? `${course.rating} (${course.ratings})` : "New"}</span><span className="tnum inline-flex items-center gap-1"><Clock size={14} />{Math.round(minutes / 60 * 10) / 10}h · {course.moduleCount || mods.length} modules</span><span className="inline-flex items-center gap-1"><Globe size={14} />{course.language}</span></p></div>
-      </div>
+      </Cover>
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-2">
           <Card><CardBody className="space-y-3"><h2 className="text-heading">What you’ll learn</h2><ul className="grid gap-2 sm:grid-cols-2">{course.outcomes.map((o) => <li key={o} className="flex items-start gap-2 text-sm"><Check size={18} weight="bold" className="mt-0.5 shrink-0 text-success" />{o}</li>)}</ul></CardBody></Card>
@@ -70,7 +71,7 @@ export default function CourseDetailScreen({ params }: ScreenProps) {
       </div>
       {paid && <CheckoutModal course={course} open={buy} onOpenChange={setBuy} />}
       <Modal open={preview} onOpenChange={setPreview} title={`Sample: ${sample?.title ?? ""}`} description="A free preview of the teaching style.">
-        <div className="space-y-3"><div className="flex aspect-video items-center justify-center rounded-2xl text-white" style={{ background: `linear-gradient(135deg, ${course.cover.from}, ${course.cover.to})` }}><PlayCircle size={56} weight="fill" /></div><p className="text-sm text-text-2">Demo preview — a short clip with captions and speed control. Full lessons unlock {paid ? "after purchase" : "once you enrol"}.</p></div>
+        <div className="space-y-3"><video controls playsInline preload="metadata" poster={videoFor("preview", course.id).poster} src={videoFor("preview", course.id).src} className="aspect-video w-full rounded-2xl bg-black object-cover" aria-label="Sample lesson preview" /><p className="text-sm text-text-2">Demo preview clip ({videoFor("preview", course.id).credit}). Full lessons unlock {paid ? "after purchase" : "once you enrol"}.</p></div>
       </Modal>
     </div>
   );

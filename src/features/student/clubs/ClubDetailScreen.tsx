@@ -42,7 +42,7 @@ export default function ClubDetailScreen({ params }: ScreenProps) {
   return (
     <div className="mx-auto max-w-4xl">
       <Link href="/student/clubs" className="mb-3 inline-flex items-center gap-1 text-sm font-semibold text-text-2 hover:text-text"><CaretLeft size={16} /> All clubs</Link>
-      <Cover from={c.cover.from} to={c.cover.to} className="mb-5 h-40 sm:h-52" rounded="rounded-[1.75rem]" icon={<Icon name={c.cover.icon} size={80} weight="duotone" />}>
+      <Cover from={c.cover.from} to={c.cover.to} image={(c.cover as any).image} className="mb-5 h-40 sm:h-52" rounded="rounded-[1.75rem]" icon={<Icon name={c.cover.icon} size={80} weight="duotone" />}>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-5 text-white"><Badge className="mb-1 bg-white/90 text-text">{c.category}</Badge><h1 className="text-display">{c.name}</h1></div>
       </Cover>
       <Card className="mb-5"><CardBody className="flex flex-wrap items-center gap-3">

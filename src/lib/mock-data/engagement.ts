@@ -1,5 +1,6 @@
 import type { FeedPost, EventItem, Club, DoubtThread, AppNotification, LiveClass, LearningProfile, RemedialPath } from "@/types";
 import { inDays, ago } from "@/lib/format";
+import { EVENT_IMAGE, CLUB_IMAGE } from "@/lib/media";
 
 const cov = (from: string, to: string, icon: string) => ({ from, to, icon });
 
@@ -131,3 +132,6 @@ export const REMEDIAL: RemedialPath[] = [
     { id: "r4", label: "Mini game: Fraction Frenzy", kind: "game", minutes: 5, done: false },
     { id: "r5", label: "Re-check: 6-question follow-up", kind: "assessment", minutes: 8, done: false } ] },
 ];
+
+EVENTS.forEach((e) => { e.cover.image = EVENT_IMAGE[e.id]; });
+CLUBS.forEach((c) => { c.cover.image = CLUB_IMAGE[c.id]; });

@@ -15,7 +15,7 @@ export function EventCard({ e }: { e: EventItem }) {
   return (
     <Link href={`/student/events/${e.id}`} className="block rounded-[1.25rem] focus-visible:outline-2">
       <Card className="h-full overflow-hidden transition-shadow hover:shadow-card">
-        <Cover from={e.cover.from} to={e.cover.to} className="h-28" rounded="rounded-none" icon={<Icon name={e.cover.icon} size={44} weight="duotone" />}>
+        <Cover from={e.cover.from} to={e.cover.to} image={(e.cover as any).image} className="h-28" rounded="rounded-none" icon={<Icon name={e.cover.icon} size={44} weight="duotone" />}>
           <span className="absolute left-3 top-3 rounded-full bg-black/35 px-2.5 py-0.5 text-xs font-semibold text-white">{LEVEL_LABEL[e.scope]} level</span>
         </Cover>
         <div className="space-y-2 p-4">

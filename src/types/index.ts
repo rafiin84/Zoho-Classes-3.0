@@ -37,7 +37,7 @@ export type CourseKind = "institution" | "marketplace";
 export interface Course {
   id: ID; title: string; description: string; subjectId: string; gradeIds: string[]; creatorName: string; creatorKind: "teacher" | "ai-teacher" | "creator" | "institution";
   institutionId?: ID; priceType: "free" | "paid"; price: number; currency: "INR"; durationMinutes: number; moduleCount: number; lessonCount: number;
-  rating: number; ratings: number; language: string; status: "draft" | "published" | "archived"; version: number; cover: { from: string; to: string; icon: string };
+  rating: number; ratings: number; language: string; status: "draft" | "published" | "archived"; version: number; cover: { from: string; to: string; icon: string; image?: string };
   labels: ("teacher-assigned" | "ai-recommended" | "trending" | "featured")[]; outcomes: string[]; kind: CourseKind; accessDays?: number;
 }
 
@@ -79,12 +79,12 @@ export interface EventItem {
   id: ID; title: string; category: string; organiser: string; scope: "class" | "school" | "inter-school" | "district" | "state"; startAt: ISODate; endAt: ISODate;
   venue: string; eligibility: string; rules: string[]; registrationMode: "individual" | "team" | "none"; capacity: number; registered: number; status: EventStatus;
   schedule: { time: string; label: string }[]; judges: { name: string; role: string }[]; rubric: { criterion: string; weight: number }[];
-  announcements: { at: ISODate; text: string }[]; results?: { rank: number; name: string; team?: string; score: number }[]; cover: { from: string; to: string; icon: string };
+  announcements: { at: ISODate; text: string }[]; results?: { rank: number; name: string; team?: string; score: number }[]; cover: { from: string; to: string; icon: string; image?: string };
   teamSize?: number; myRegistration: RegistrationStatus; myTeam?: { name: string; members: string[] };
 }
 export interface Club {
   id: ID; name: string; category: string; description: string; purpose: string; mentor: string; leaders: string[]; membershipPolicy: "open" | "request"; members: number;
-  meeting: string; activities: { id: ID; title: string; at: ISODate }[]; cover: { from: string; to: string; icon: string }; myStatus: "none" | "pending" | "active" | "rejected";
+  meeting: string; activities: { id: ID; title: string; at: ISODate }[]; cover: { from: string; to: string; icon: string; image?: string }; myStatus: "none" | "pending" | "active" | "rejected";
   achievements: string[]; posts: ID[]; resources: string[];
 }
 

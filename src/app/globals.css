@@ -137,3 +137,12 @@ body {
 /* Prevent grid/flex children with wide content (tables, code, long words) from blowing out the page on phones. */
 main .grid > *, main .flex > * { min-width: 0; }
 main { overflow-x: clip; }
+
+/* Playful motion helpers (student). All disabled under prefers-reduced-motion by the global rule above. */
+@keyframes floaty { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-10px) rotate(6deg); } }
+@keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+.floaty { animation: floaty 6s ease-in-out infinite; }
+.floaty-slow { animation: floaty 9s ease-in-out infinite reverse; }
+.hover-wiggle:hover { animation: wiggle 0.5s ease-in-out; }
+.sticker { box-shadow: 0 0 0 3px #fff, 0 6px 14px -4px rgb(32 35 51 / 0.35); }
+[data-theme="dark"] .sticker { box-shadow: 0 0 0 3px var(--surface), 0 6px 14px -4px rgb(0 0 0 / 0.5); }

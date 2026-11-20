@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CheckCircle, Circle, FilePdf, GameController, Lightbulb, Pause, Play, VideoCamera, WarningCircle, ChatsCircle, PaperPlaneRight, ClosedCaptioning, Flask, NotePencil, X, Sparkle } from "@phosphor-icons/react";
 import { Badge, Button, Modal, Progress, Select, Textarea, cn } from "@/components/ui";
+import { videoFor } from "@/lib/media";
 import { MICRO_BANK } from "@/lib/mock-data/micro";
 import { ACTIVITY_LABEL, registerRenderer, type RendererProps } from "./registry";
 
@@ -71,25 +72,36 @@ function Checkpoint(kind: "ai" | "teacher") {
 
 /* ---------- video ---------- */
 const CAPTIONS = ["Welcome back — today we’re building intuition first.", "Imagine two pizzas, cut into different numbers of slices.", "To compare fairly, we make the slices the same size.", "Now count how many matching slices we have.", "Great. Let’s try one together on the next screen."];
+function fmt(t: number) { const m = Math.floor(t / 60), s = Math.floor(t % 60); return `${m}:${String(s).padStart(2, "0")}`; }
 function Video(p: RendererProps) {
-  const [t, setT] = useState(0); const [playing, setPlaying] = useState(false); const [speed, setSpeed] = useState("1"); const [cc, setCc] = useState(true); const [failed, setFailed] = useState(false); const [paused, setPaused] = useState(false); const [cpDone, setCpDone] = useState(false);
+  const asset = useMemo(() => videoFor(p.activity.id, p.course.id), [p.activity.id, p.course.id]);
+  const ref = useRef<HTMLVideoElement>(null);
+  const [t, setT] = useState(0); const [dur, setDur] = useState(0); const [playing, setPlaying] = useState(false); const [speed, setSpeed] = useState("1"); const [cc, setCc] = useState(true); const [failed, setFailed] = useState(false); const [paused, setPaused] = useState(false); const [cpDone, setCpDone] = useState(false);
   const cp = useMemo(() => p.all.find((a) => a.moduleId === p.activity.moduleId && a.type === "ai-checkpoint") ?? null, [p.all, p.activity]);
   const q = useMemo<Mcq>(() => payloadMcq(cp ?? p.activity) ?? mcqsFor(p.activity, 2)[1] ?? mcqsFor(p.activity, 1)[0], [cp, p.activity]);
-  useEffect(() => { if (!playing || failed || paused) return; const i = setInterval(() => setT((v) => Math.min(100, v + 2 * Number(speed))), 400); return () => clearInterval(i); }, [playing, speed, failed, paused]);
-  useEffect(() => { if (t >= 50 && !cpDone && !p.done) { setPlaying(false); setPaused(true); } if (t >= 100) { setPlaying(false); p.done || p.onComplete(); } }, [t]); // eslint-disable-line react-hooks/exhaustive-deps
-  const reset = () => { setT(0); setPlaying(false); setFailed(false); setPaused(false); setCpDone(false); };
-  const cap = CAPTIONS[Math.min(CAPTIONS.length - 1, Math.floor(t / 20))];
+  const pct = dur ? (t / dur) * 100 : 0;
+  const toggle = () => { const v = ref.current; if (!v || paused) return; if (v.paused) v.play().catch(() => setFailed(true)); else v.pause(); };
+  useEffect(() => { if (ref.current) ref.current.playbackRate = Number(speed); }, [speed]);
+  const onTime = () => {
+    const v = ref.current; if (!v) return; setT(v.currentTime);
+    if (v.duration && v.currentTime / v.duration >= 0.5 && !cpDone && !p.done) { v.pause(); setPaused(true); }
+  };
+  const reset = () => { const v = ref.current; if (v) { v.currentTime = 0; v.pause(); } setT(0); setFailed(false); setPaused(false); setCpDone(false); };
+  const cap = CAPTIONS[Math.min(CAPTIONS.length - 1, Math.floor(pct / 20))];
   return (
     <div className="space-y-3">
-      <div className="relative aspect-video overflow-hidden rounded-[1.25rem] bg-gradient-to-br from-[#1d1b4b] to-[#5146E5] text-white">
-        {failed ? <div role="alert" className="flex size-full flex-col items-center justify-center gap-2 p-4 text-center"><WarningCircle size={40} weight="fill" className="text-highlight" /><p className="font-semibold">This video couldn’t load</p><p className="text-sm text-white/80">Check your connection — your place is saved.</p><div className="flex gap-2"><Button size="sm" variant="outline" className="border-0 bg-white text-primary" onClick={() => setFailed(false)}>Retry</Button><Button size="sm" variant="ghost" className="text-white hover:bg-white/15" asChild><Link href={`/student/doubts?ask=1&course=${p.course.id}&lesson=${p.activity.id}`}>Report to my teacher</Link></Button></div></div> : <>
-          <button type="button" aria-label={playing ? "Pause" : "Play"} onClick={() => !paused && setPlaying((v) => !v)} className="absolute inset-0 flex items-center justify-center">{!playing && !paused && <span className="flex size-16 items-center justify-center rounded-full bg-white/90 text-primary shadow-glow"><Play size={30} weight="fill" /></span>}{playing && <span className="sr-only">Pause</span>}</button>
-          <VideoCamera size={120} weight="duotone" className="pointer-events-none absolute inset-0 m-auto text-white/10" />
-          {cc && <p aria-live="off" className="absolute inset-x-4 bottom-12 rounded-lg bg-black/60 px-3 py-1.5 text-center text-sm">{cap}</p>}
-          <div className="absolute inset-x-3 bottom-2 flex items-center gap-2"><button type="button" aria-label={playing ? "Pause" : "Play"} onClick={() => !paused && setPlaying((v) => !v)} className="flex size-8 items-center justify-center rounded-full bg-white/20">{playing ? <Pause size={16} weight="fill" /> : <Play size={16} weight="fill" />}</button><div role="progressbar" aria-valuenow={Math.round(t)} aria-label="Video progress" className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/25"><div className="h-full bg-highlight" style={{ width: `${t}%` }} /></div><button type="button" aria-pressed={cc} aria-label="Captions" onClick={() => setCc((v) => !v)} className={cn("flex size-8 items-center justify-center rounded-full", cc ? "bg-white text-primary" : "bg-white/20")}><ClosedCaptioning size={18} weight="fill" /></button></div></>}
-        {paused && !failed && <div className="absolute inset-0 flex items-center justify-center bg-[#0b0c1f]/80 p-4"><div className="w-full max-w-md rounded-2xl bg-surface p-4 text-text"><Badge tone="ai">Playback paused for a quick check</Badge><div className="mt-3"><McqBlock q={q} onAnswer={(ok) => { p.onMastery(ok); setCpDone(true); }} />{cpDone && <Button className="mt-3" onClick={() => setPaused(false)}>Resume video</Button>}</div></div></div>}
+      <div className="relative aspect-video overflow-hidden rounded-[1.25rem] bg-[#0b0c1f] text-white">
+        {failed ? <div role="alert" className="flex size-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-[#1d1b4b] to-[#5146E5] p-4 text-center"><WarningCircle size={40} weight="fill" className="text-highlight" /><p className="font-semibold">This video couldn’t load</p><p className="text-sm text-white/80">Check your connection — your place is saved.</p><div className="flex gap-2"><Button size="sm" variant="outline" className="border-0 bg-white text-primary" onClick={() => { setFailed(false); ref.current?.load(); }}>Retry</Button><Button size="sm" variant="ghost" className="text-white hover:bg-white/15" asChild><Link href={`/student/doubts?ask=1&course=${p.course.id}&lesson=${p.activity.id}`}>Report to my teacher</Link></Button></div></div> : <>
+          <video ref={ref} src={asset.src} poster={asset.poster} playsInline preload="metadata" className="size-full object-cover" aria-label={asset.title}
+            onLoadedMetadata={(e) => setDur(e.currentTarget.duration)} onTimeUpdate={onTime} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setFailed(true)}
+            onEnded={() => { setPlaying(false); p.done || p.onComplete(); }} />
+          <button type="button" aria-label={playing ? "Pause" : "Play"} onClick={toggle} className="absolute inset-0 flex items-center justify-center">{!playing && !paused && <span className="flex size-16 items-center justify-center rounded-full bg-white/90 text-primary shadow-glow"><Play size={30} weight="fill" /></span>}</button>
+          {cc && playing && <p aria-live="off" className="absolute inset-x-4 bottom-14 rounded-lg bg-black/60 px-3 py-1.5 text-center text-sm">{cap}</p>}
+          <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-gradient-to-t from-black/70 to-transparent px-3 pb-2 pt-6"><button type="button" aria-label={playing ? "Pause" : "Play"} onClick={toggle} className="flex size-8 items-center justify-center rounded-full bg-white/20">{playing ? <Pause size={16} weight="fill" /> : <Play size={16} weight="fill" />}</button><div role="progressbar" aria-valuenow={Math.round(pct)} aria-label="Video progress" className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/25"><div className="h-full bg-highlight" style={{ width: `${pct}%` }} /></div><span className="tnum text-[11px]">{fmt(t)} / {fmt(dur)}</span><button type="button" aria-pressed={cc} aria-label="Captions" onClick={() => setCc((v) => !v)} className={cn("flex size-8 items-center justify-center rounded-full", cc ? "bg-white text-primary" : "bg-white/20")}><ClosedCaptioning size={18} weight="fill" /></button></div></>}
+        {paused && !failed && <div className="absolute inset-0 flex items-center justify-center bg-[#0b0c1f]/80 p-4"><div className="w-full max-w-md rounded-2xl bg-surface p-4 text-text"><Badge tone="ai">Playback paused for a quick check</Badge><div className="mt-3"><McqBlock q={q} onAnswer={(ok) => { p.onMastery(ok); setCpDone(true); }} />{cpDone && <Button className="mt-3" onClick={() => { setPaused(false); ref.current?.play().catch(() => {}); }}>Resume video</Button>}</div></div></div>}
       </div>
-      <div className="flex flex-wrap items-center gap-3"><label className="flex items-center gap-2 text-sm text-text-2">Speed<Select value={speed} onChange={(e) => setSpeed(e.target.value)} className="h-9 w-24">{["0.75", "1", "1.25", "1.5", "2"].map((s) => <option key={s} value={s}>{s}×</option>)}</Select></label><Button size="sm" variant="ghost" onClick={reset}>Restart</Button><Button size="sm" variant="ghost" onClick={() => setFailed(true)}>Simulate media error</Button><span className="tnum text-xs text-text-2">{Math.round(t)}% watched</span><span className="ml-auto"><Complete done={p.done} onComplete={p.onComplete} label="Mark as watched" /></span></div>
+      <p className="text-xs text-text-2">{asset.title} · demo clip ({asset.credit}) — captions below are sample text.</p>
+      <div className="flex flex-wrap items-center gap-3"><label className="flex items-center gap-2 text-sm text-text-2">Speed<Select value={speed} onChange={(e) => setSpeed(e.target.value)} className="h-9 w-24">{["0.75", "1", "1.25", "1.5", "2"].map((s) => <option key={s} value={s}>{s}×</option>)}</Select></label><Button size="sm" variant="ghost" onClick={reset}>Restart</Button><Button size="sm" variant="ghost" onClick={() => setFailed(true)}>Simulate media error</Button><span className="tnum text-xs text-text-2">{Math.round(pct)}% watched</span><span className="ml-auto"><Complete done={p.done} onComplete={p.onComplete} label="Mark as watched" /></span></div>
     </div>
   );
 }

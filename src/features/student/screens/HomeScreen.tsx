@@ -1,4 +1,5 @@
 "use client";
+import { Cover } from "@/components/ui";
 import { useMemo } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -99,7 +100,7 @@ export default function HomeScreen(_p: ScreenProps) {
         <Card className="overflow-hidden lg:col-span-4" aria-label="Continue learning">
           {resume ? (
             <Link href={`/student/player/${resume.id}${resume.nextActivityId ? `?activity=${resume.nextActivityId}` : ""}`} className="flex h-full flex-col">
-              <div className="relative h-24" style={{ background: `linear-gradient(135deg, ${resume.cover.from}, ${resume.cover.to})` }}><span className="absolute inset-0 flex items-center justify-center text-white/90"><Icon name={resume.cover.icon} size={44} weight="duotone" /></span><Badge className="absolute left-3 top-3 bg-surface/90">Continue learning</Badge></div>
+              <Cover from={resume.cover.from} to={resume.cover.to} image={resume.cover.image} rounded="rounded-none" className="h-28" icon={<Icon name={resume.cover.icon} size={40} weight="duotone" />}><Badge className="absolute left-3 top-3 bg-surface/90">Continue learning</Badge></Cover>
               <div className="flex flex-1 flex-col gap-2 p-4"><h3 className="line-clamp-1 font-bold">{resume.title}</h3><p className="line-clamp-1 text-sm text-text-2">{resume.progressPct === 0 ? "Up first: " : "Resume: "}{nextAct?.title ?? "Pick up where you left off"}</p><div className="h-2 overflow-hidden rounded-full bg-surface-2"><div className="h-full rounded-full bg-primary" style={{ width: `${resume.progressPct}%` }} /></div><div className="mt-auto flex items-center justify-between text-sm"><span className="tnum text-text-2">{resume.completedCount}/{resume.totalActivities} done</span><span className="inline-flex items-center gap-1 font-semibold text-primary">{resume.progressPct === 0 ? "Start" : "Continue"}<ArrowRight size={14} weight="bold" /></span></div></div>
             </Link>
           ) : (

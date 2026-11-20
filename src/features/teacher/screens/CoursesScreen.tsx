@@ -24,7 +24,7 @@ export default function CoursesScreen() {
             </ListToolbar>
             {!list.length ? <NoResults query={q} onClear={() => { setQ(""); setStatus("all"); }} /> : (
               <ul className="grid gap-3 sm:grid-cols-2">{list.map((c) => (
-                <li key={c.id}><Link href={tHref(`courses/${c.id}`)}><Card className="overflow-hidden transition-shadow hover:shadow-md"><Cover from={c.cover.from} to={c.cover.to} className="h-20" rounded="rounded-none" icon={<Icon name={c.cover.icon} size={32} />} />
+                <li key={c.id}><Link href={tHref(`courses/${c.id}`)}><Card className="overflow-hidden transition-shadow hover:shadow-md"><Cover from={c.cover.from} to={c.cover.to} image={(c.cover as any).image} className="h-20" rounded="rounded-none" icon={<Icon name={c.cover.icon} size={32} />} />
                   <CardBody className="space-y-2"><div className="flex items-start justify-between gap-2"><h2 className="font-semibold leading-snug">{c.title}</h2><StatusBadge status={c.status} /></div>
                     <p className="text-xs text-text-2">{subjectById(c.subjectId).name} · {c.moduleCount} modules · {c.lessonCount} activities · v{c.version}</p></CardBody></Card></Link></li>))}</ul>
             )}

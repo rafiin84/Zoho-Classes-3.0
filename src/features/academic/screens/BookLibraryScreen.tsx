@@ -59,7 +59,7 @@ export default function BookLibraryScreen({ role }: ScreenProps) {
             : view.length === 0 ? <NoResults onClear={clear} query={q} /> : (
             <ul className="grid gap-3 md:grid-cols-2">{view.map((b) => (
               <li key={b.id}><Card className="h-full"><CardBody className="flex h-full gap-3">
-                <Cover from={b.cover.from} to={b.cover.to} icon={<Icon name={b.cover.icon} size={26} />} className="h-24 w-[4.5rem] shrink-0" rounded="rounded-xl" />
+                <Cover from={b.cover.from} to={b.cover.to} image={(b.cover as any).image} icon={<Icon name={b.cover.icon} size={26} />} className="h-24 w-[4.5rem] shrink-0" rounded="rounded-xl" />
                 <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                   <div className="flex flex-wrap items-center gap-1.5"><StatusBadge status={b.access.revoked ? "revoked" : b.ingestion.stage} label={b.access.revoked ? "Access revoked" : b.ingestion.stage} /><Badge>{subjectById(b.subjectId).name}</Badge><Badge>{b.gradeLabel}</Badge></div>
                   <h2 className="line-clamp-2 text-sm font-bold">{b.title}</h2>

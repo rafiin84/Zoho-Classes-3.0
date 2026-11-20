@@ -25,6 +25,9 @@ export function TutorHeroCard({ hint }: { hint?: string }) {
   return (
     <motion.section initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 220, damping: 26 }} aria-label="Your AI Tutor"
       className="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-primary via-[#6048e0] to-violet p-5 text-white shadow-glow sm:p-7">
+      <span aria-hidden className="floaty pointer-events-none absolute right-6 top-5 size-10 rotate-12 rounded-xl bg-highlight/90 shadow-soft" />
+      <span aria-hidden className="floaty-slow pointer-events-none absolute right-24 top-16 size-6 rounded-full bg-white/40" />
+      <svg aria-hidden viewBox="0 0 60 60" className="floaty pointer-events-none absolute bottom-6 right-8 hidden size-14 text-white/35 sm:block"><path d="M30 4l7 17 18 2-14 12 5 18-16-10-16 10 5-18L5 23l18-2z" fill="currentColor" /></svg>
       <span aria-hidden className="pointer-events-none absolute -right-10 -top-14 size-56 rounded-full bg-white/10" />
       <span aria-hidden className="pointer-events-none absolute -bottom-20 right-24 size-48 rounded-full bg-highlight/20 blur-2xl" />
       <div className="relative flex items-start gap-4">

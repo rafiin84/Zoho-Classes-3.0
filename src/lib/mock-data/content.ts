@@ -1,5 +1,6 @@
 import type { Course, CourseModule, LearningActivity, Assignment } from "@/types";
 import { inDays } from "@/lib/format";
+import { COURSE_IMAGE } from "@/lib/media";
 
 const cov = (from: string, to: string, icon: string) => ({ from, to, icon });
 export const COURSES: Course[] = [
@@ -11,6 +12,7 @@ export const COURSES: Course[] = [
   { id: "crs-algebra-pro", title: "Algebra Launchpad (Marketplace)", description: "A visual, game-based path from arithmetic to linear equations. By an independent educator.", subjectId: "sub-math", gradeIds: ["g7", "g8"], creatorName: "Meena Subramaniam (creator)", creatorKind: "creator", priceType: "paid", price: 599, currency: "INR", durationMinutes: 400, moduleCount: 5, lessonCount: 24, rating: 4.6, ratings: 530, language: "English", status: "published", version: 2, cover: cov("#4338CA", "#B8B5FF", "Function"), labels: ["featured"], outcomes: ["Solve one-variable equations", "Model situations algebraically"], kind: "marketplace", accessDays: 180 },
   { id: "crs-hindi-kahani", title: "हिंदी कहानी लेखन", description: "Hindi storytelling workshop with AI Teacher Kavya (awaiting approval).", subjectId: "sub-hin", gradeIds: ["g8"], creatorName: "Kavya (AI Teacher)", creatorKind: "ai-teacher", institutionId: "inst-greenfield", priceType: "free", price: 0, currency: "INR", durationMinutes: 150, moduleCount: 2, lessonCount: 6, rating: 0, ratings: 0, language: "Hindi", status: "draft", version: 1, cover: cov("#C0262D", "#F5C66A", "Translate"), labels: [], outcomes: ["Write short stories in Hindi"], kind: "institution" },
 ];
+COURSES.forEach((c) => { c.cover.image = COURSE_IMAGE[c.id]; });
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);
 
 export const MODULES: CourseModule[] = [

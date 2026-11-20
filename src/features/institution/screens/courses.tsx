@@ -37,7 +37,7 @@ export default function CoursesScreen(_: ScreenProps) {
           {!own.length ? <EmptyState title="No courses yet" body="Create one in the AI Content Studio or buy from the Marketplace." action={{ label: "Open AI Content Studio", href: "/institution/studio" }} /> : !rows.length ? <NoResults query={q} onClear={clear} /> :
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{rows.map((c) => (
               <div key={c.id} className="overflow-hidden rounded-[1.25rem] border border-border bg-surface shadow-soft">
-                <Cover from={c.cover.from} to={c.cover.to} className="h-20" icon={<Icon name={c.cover.icon} size={32} />} rounded="rounded-none" />
+                <Cover from={c.cover.from} to={c.cover.to} image={(c.cover as any).image} className="h-20" icon={<Icon name={c.cover.icon} size={32} />} rounded="rounded-none" />
                 <div className="space-y-2 p-4"><div className="flex flex-wrap gap-1.5"><StatusBadge status={c.status} /><Badge>{subjectById(c.subjectId).name}</Badge><Badge tone={c.priceType === "paid" ? "highlight" : "neutral"}>{c.priceType === "paid" ? fmtMoney(c.price) : "Free"}</Badge></div>
                   <h3 className="font-semibold leading-snug">{c.title}</h3><p className="text-xs text-text-2">v{c.version} · {c.moduleCount} modules · {c.lessonCount} lessons · by {c.creatorName}</p>
                   <div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" onClick={() => setSel(c)}>Quality checks</Button><Button size="sm" variant="outline" disabled={c.status !== "published"} onClick={() => { setDist(c); setDc([]); }}>Distribute</Button>
